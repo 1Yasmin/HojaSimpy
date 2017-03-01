@@ -2,26 +2,20 @@
 #Yasmin Chavez 16101
 #Samantha Duarte 16256
 #28/02/2017
+
 import random
 import simpy
 import time
 
-def tiempo(funcion):
-    def medidorTiempo(*args, **kwargs):
-        comienza = time.time()
-        termina = time.time()
-        print funcion.esteProceso, "se tardo", termina - comienza, "segundos"
-        return funcion(*args, **kwargs)
-    return medidorTiempo
+t0 = time.clock()
 
 def esteProceso (nombre, env, CPU, espacioRAM):
-
+    
     velocidadProc = 1
     numInstrucc = 3
     valida = True
     instruccPorRealizar = random.expovariate(0.1/10)
     memoriaActual = random.randint(1,10)
-
     while (valida):
         if capacidadMemoria.level >= memoriaActual:
             yield capacidadMemoria.get(memoriaActual)
@@ -49,11 +43,11 @@ def esteProceso (nombre, env, CPU, espacioRAM):
             if (num == 1):
                 print ('%s entro a waiting' % nombre)
                 yield env.timeout(1)
+    
     print ('%s Terminated' % nombre)
     print ('memoria RAM: %d' %memoriaActual)
     yield capacidadMemoria.put(memoriaActual)
-
-            
+    
 env = simpy.Environment()
 CPU = simpy.Resource(env, capacity = 1)
 capacidadMemoria = simpy.Container(env, 100, init=10)
@@ -63,4 +57,4 @@ for i in range (10):
     env.process(esteProceso('Proceso %d' % i, env, CPU , capacidadMemoria))
 env.run()
 
-print tiempo(esteProceso)
+print time.clock()-t0
